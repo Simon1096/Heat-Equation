@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Vector.h"
+#include "Matrix.h"
 
 using namespace std;
 
@@ -11,11 +12,26 @@ ostream &operator<<(ostream &os, Vector<T> &v) {
 		return os << "[Empty vector]";
 	os << "[";
 	for (int i = 0; i < v.length; i++)
-		os << v.data[i] << ", ";
-	return os << "\b\b]";
+		os << v.data[i] << " ";
+	return os << "\b]";
+}
+
+template<typename T>
+ostream &operator<<(ostream &os, Matrix<T> &m) {
+	if (m.rows == 0 || m.cols == 0)
+		return os << "[[Empty matrix]]";
+	os << "[";
+	for (int i = 0; i < m.rows; i++) {
+		os << "[";
+		for (int j = 0; j < m.cols; j++)
+			os << m[{i, j}] << " ";
+		os << "\b]\n";
+	}
+	return os << "]";
 }
 
 int main() {
+	/*
 	Vector<int> v;
 	cout << "Default constructor\n" << v << "\n" << endl;
 
@@ -45,6 +61,14 @@ int main() {
 
 	cout << "Left hand multiplication\n" << (3 * v3) << endl;
 	cout << "Left hand multiplication with double\n" << (3.5 * v3) << "\n" << endl;
+	*/
+	Matrix<int> map(2, 2);
+
+	cout << map[{1, 1}] << endl;
+	cout << map << endl;
+
+	Vector<int> vec = { 2, 2 };
+	cout << map.matvec(vec) << endl;
 
 	system("pause");
 	return 0;

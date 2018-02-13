@@ -16,11 +16,14 @@ public:
 	Vector() {
 		length = 0;
 		data = new T[0];
+		data[0] = 0;
 	}
 
 	Vector(int l) {
 		length = l;
 		data = new T[length];
+		for (int i = 0; i < length; i++)
+			data[i] = 0;
 	}
 
 	Vector(const initializer_list<T> list) : Vector((int)list.size()) {
