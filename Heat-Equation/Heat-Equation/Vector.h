@@ -12,6 +12,13 @@ class Vector {
 public:
 	int length;
 	T* data;
+	
+	~Vector() {
+		delete[] data;
+
+		length = 0;
+		data = nullptr;
+	}
 
 	Vector() {
 		length = 0;
@@ -32,18 +39,8 @@ public:
 
 	Vector(const Vector<T> &other) {
 		length = other.length;
-		data = other.data;
-	}
-
-	Vector& operator=(const Vector v) {
-		if (this != &c) {
-			delete[] data;
-			data = new T[v.length];
-			length = v.length;
-
-			copy(v.data, v.data + length, data);
-		}
-		return *this;
+		data = new T[length];
+		copy(other.data, other.data + length, data);
 	}
 
 	Vector operator+(const Vector<T> &v) {
@@ -55,13 +52,46 @@ public:
 		return out;
 	}
 
-	Vector operator-(const Vector<T> &v) {
+	Vector operator-(const Vector<T> &v) const {
 		if (length != v.length)
 			throw invalid_argument("Unequal vector lengths");
 		Vector<T> out(length);
 		for (int i = 0; i < length; i++)
 			out.data[i] = data[i] - v.data[i];
 		return out;
+	}
+
+	Vector operator +=(const Vector<T> &v) {
+		if (length != v.length)
+			throw invalid_argument("Unequal vector lengths");
+		for (int i = 0; i < length; i++)
+			data[i] += v.data[i];
+		return *this;
+	}
+
+	Vector& operator=(const Vector<T> &v) {
+		if (this != &v) {
+			delete[] data;
+
+			data = new T[v.length];
+			length = v.length;
+
+			copy(v.data, v.data + length, data);
+		}
+		return *this;
+	}
+
+	Vector& operator=(Vector<T> &&v) {
+		if (this != &v) {
+			delete[] data;
+
+			length = v.length;
+			data = v.data;
+
+			v.length = 0;
+			v.data = nullptr;
+		}
+		return *this;
 	}
 
 	template<typename U>

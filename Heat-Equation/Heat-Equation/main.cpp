@@ -30,6 +30,32 @@ ostream &operator<<(ostream &os, Matrix<T> &m) {
 	return os << "]";
 }
 
+template<typename T>
+int cg(Matrix<T> &A, const Vector<T> &b, Vector<T> &x, T tol, int maxite) {
+	Vector<T> p = b - A.matvec(x);
+	Vector<T> r = p;
+
+	T tol2 = tol * tol;
+	T alpha, beta, dotr, dotr_new;
+
+	for (int i = 0; i < maxite; i++) {
+		dotr = dot(r, r);
+
+		alpha = dotr / dot(A.matvec(p), p);
+		x = x + alpha * p;
+		Vector<T> r_new = r - alpha * A.matvec(p);
+		dotr_new = dot(r_new, r_new);
+
+		if (dotr_new < tol2)
+			return i;
+
+		beta = dotr_new / dotr;
+		p = r_new + beta * p;
+		r = r_new;
+	}
+	return -1;
+}
+
 int main() {
 	/*
 	Vector<int> v;
@@ -64,11 +90,43 @@ int main() {
 	*/
 	Matrix<int> map(2, 2);
 
+	map[{0, 0}] = 0;
+	map[{0, 1}] = 1;
+	map[{1, 0}] = 2;
+	map[{1, 1}] = 3;
+
 	cout << map[{1, 1}] << endl;
 	cout << map << endl;
+	map[{1, 1}] = 42;
+	cout << map[{1, 1}] << "\n" << endl;
 
 	Vector<int> vec = { 2, 2 };
-	cout << map.matvec(vec) << endl;
+	cout << "Matvec:" << map.matvec(vec) << "\n" << endl;
+
+	Matrix<double> identity(2, 2);
+	identity[{0, 0}] = 2;
+	identity[{1, 1}] = 2;
+
+	Vector<double> b = { 2, 4 };
+	Vector<double> x = { 1, 1 };
+
+	cout << "# of iterations " << cg(identity, b, x, 1.0, 1000) << endl;
+	cout << "Solution " << x << endl;
+	cout << "Result " << identity.matvec(x) << "\n" << endl;
+
+
+	Matrix<double> m(2, 2);
+	m[{0, 0}] = 4;
+	m[{0, 1}] = 1;
+	m[{1, 0}] = 1;
+	m[{1, 1}] = 3;
+
+	Vector<double> b2 = { 1, 2 };
+	Vector<double> x2 = { 2, 1 };
+
+	cout << "# of iterations " << cg(m, b2, x2, 1e-2, 1000) << endl;
+	cout << "Solution " << x2 << endl;
+	cout << "Result " << m.matvec(x2) << "\n" << endl;
 
 	system("pause");
 	return 0;
