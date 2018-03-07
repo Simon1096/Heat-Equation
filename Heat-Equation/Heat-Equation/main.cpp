@@ -1,8 +1,17 @@
 #define _SCL_SECURE_NO_WARNINGS
 
+// I am PI
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 #include <iostream>
 #include "Vector.h"
 #include "Matrix.h"
+#include "cg.h"
+#include "Heat1D.h"
+#include "Heat2D.h"
+#include "Heat.h"
 
 using namespace std;
 
@@ -30,33 +39,8 @@ ostream &operator<<(ostream &os, Matrix<T> &m) {
 	return os << "]";
 }
 
-template<typename T>
-int cg(Matrix<T> &A, const Vector<T> &b, Vector<T> &x, T tol, int maxite) {
-	Vector<T> p = b - A.matvec(x);
-	Vector<T> r = p;
-
-	T tol2 = tol * tol;
-	T alpha, beta, dotr, dotr_new;
-
-	for (int i = 0; i < maxite; i++) {
-		dotr = dot(r, r);
-
-		alpha = dotr / dot(A.matvec(p), p);
-		x = x + alpha * p;
-		Vector<T> r_new = r - alpha * A.matvec(p);
-		dotr_new = dot(r_new, r_new);
-
-		if (dotr_new < tol2)
-			return i;
-
-		beta = dotr_new / dotr;
-		p = r_new + beta * p;
-		r = r_new;
-	}
-	return -1;
-}
-
 int main() {
+	// Vector tests
 	/*
 	Vector<int> v;
 	cout << "Default constructor\n" << v << "\n" << endl;
@@ -88,6 +72,10 @@ int main() {
 	cout << "Left hand multiplication\n" << (3 * v3) << endl;
 	cout << "Left hand multiplication with double\n" << (3.5 * v3) << "\n" << endl;
 	*/
+
+
+	// Matrix tests
+	/*
 	Matrix<int> map(2, 2);
 
 	map[{0, 0}] = 0;
@@ -128,6 +116,44 @@ int main() {
 	cout << "Solution " << x2 << endl;
 	cout << "Result " << m.matvec(x2) << "\n" << endl;
 
+	Matrix<double> m2(2, 2);
+	m2[{0, 0}] = 2;
+	m2[{0, 1}] = 1;
+	m2[{1, 0}] = 1;
+	m2[{1, 1}] = 2;
+
+	cout << m2 << endl;
+
+	Vector<double> b3 = { 2, 4 };
+	Vector<double> x3 = { 1, 1 };
+
+	cout << "# of iterations " << cg(m2, b3, x3, 1e-2, 1000) << endl;
+	cout << "Solution " << x3 << endl;
+	cout << "Result " << m2.matvec(x3) << "\n" << endl;
+	*/
+
+	// Heat1D tests
+	//cout << "Matrix of Heat1D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
+	//cout << Heat1D(0.3125, 0.1, 3).M << "\n" << endl;
+
+	// Not recommended to run. (Takes a while)
+	Heat1D h1(0.3125, 0.001, 99);
+	cout << "Exact solution:\n" << h1.exact(1) << endl;
+	cout << "Numerical solution:\n" << h1.solve(1) << endl;
+
+	//cout << "Matrix of Heat2D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
+	//cout << Heat2D(0.3125, 0.1, 3).M << "\n" << endl;
+
+	//Heat2D h2(0.3125, 0.001, 99);
+	//cout << "Exact solution:\n" << h2.exact(0.5) << endl;
+	//cout << "Numerical solution:\n" << h2.solve(0.5) << endl;
+	/*
+	Heat<1> heat1(0.3125, 0.1, 3);
+	cout << heat1.M << endl;
+
+	Heat<2> heat2(0.3125, 0.1, 3);
+	cout << heat2.M << endl;
+	*/
 	system("pause");
 	return 0;
 }
