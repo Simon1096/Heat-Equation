@@ -6,11 +6,6 @@
 #include "cg.h"
 #include <ostream>
 
-// I got tired
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 using namespace std;
 
 template<int n>
@@ -31,19 +26,15 @@ public:
 		this->length = pow(m, n);
 		this->dx = 1.0 / (m + 1);
 
-		double prefix = -alpha * dt / (dx * dx);
 		int k = pow(m, n);
-
-		for (int i = 0; i < k; i++) {
+		double prefix = -alpha * dt / (dx * dx);
+		for (int i = 0; i < length; i++) {
+			M[{i, i}] = -2 * n * prefix + 1.0;
 			for (int j = 0; j < k; j++) {
-				if (i == j) {
-					M[{i, j}] = n * prefix * -2 + 1.0;
-				} else {
-					for (int dim = 0; dim < k; dim++) {
-						if (j == i + pow(m, dim) || j == i - pow(m, dim))
-							M[{i, j}] = prefix;
-					}
-				}
+				if (i - pow(m, j) >= 0)
+					M[{i, i - (int)pow(m, j)}] = prefix;
+				if (i + pow(m, j) < length)
+					M[{i, i + (int)pow(m, j)}] = prefix;
 			}
 		}
 	}
@@ -53,7 +44,6 @@ public:
 
 		double constant = exp(-M_PI * M_PI * alpha);
 
-		double val = constant * t;
 		for (int i = 0; i < length; i++)
 			solution.data[i] = sin((i + 1)*dx*M_PI) * constant;
 

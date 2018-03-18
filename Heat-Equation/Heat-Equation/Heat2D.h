@@ -24,16 +24,16 @@ public:
 		this->dx = 1.0 / (m + 1);
 
 		double prefix = -alpha * dt / (dx * dx);
-
 		for (int i = 0; i < m*m; i++) {
-			for (int j = 0; j < m*m; j++) {
-				if (i == j) {
-					M[{i, j}] = prefix * -4 + 1.0;
-				} else if (j == i + 1 || j == i - 1)
-					M[{i, j}] = prefix;
-				else if (j == i + m || j == i - m)
-					M[{i, j}] = prefix;
-			}
+			M[{i, i}] = -4 * prefix + 1.0;
+			if (i - 1 >= 0)
+				M[{i, i - 1}] = prefix;
+			if (i + 1 < m*m)
+				M[{i, i + 1}] = prefix;
+			if (i - m >= 0)
+				M[{i, i - m}] = prefix;
+			if (i + m < m*m)
+				M[{i, i + m}] = prefix;
 		}
 	}
 
@@ -42,7 +42,6 @@ public:
 
 		double constant = exp(-M_PI * M_PI * alpha);
 
-		double val = constant * t;
 		for (int i = 0; i < m*m; i++)
 			solution.data[i] = sin((i + 1)*dx*M_PI) * constant;
 

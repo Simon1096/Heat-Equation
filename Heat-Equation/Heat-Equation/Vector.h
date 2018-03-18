@@ -12,13 +12,6 @@ class Vector {
 public:
 	int length;
 	T* data;
-	
-	~Vector() {
-		delete[] data;
-
-		length = 0;
-		data = nullptr;
-	}
 
 	Vector() {
 		length = 0;

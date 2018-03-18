@@ -6,10 +6,6 @@
 #include "cg.h"
 #include <ostream>
 
-// I got tired
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 using namespace std;
 
@@ -32,7 +28,7 @@ public:
 		// Construct tridiagonal matrix
 		for (int i = 0; i < m; i++) {
 			// Main diagonal
-			M[{i,i}] = prefix * -2 + 1.0;
+			M[{i, i}] = -2 * prefix + 1.0;
 			// Left side diagonal
 			if (i - 1 >= 0)
 				M[{i, i - 1}] = prefix;

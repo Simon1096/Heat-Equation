@@ -12,6 +12,7 @@
 #include "Heat1D.h"
 #include "Heat2D.h"
 #include "Heat.h"
+#include <chrono>
 
 using namespace std;
 
@@ -41,19 +42,18 @@ ostream &operator<<(ostream &os, Matrix<T> &m) {
 
 int main() {
 	// Vector tests
-	/*
 	Vector<int> v;
 	cout << "Default constructor\n" << v << "\n" << endl;
-
+	
 	Vector<int> v2(5);
 	cout << "Constructor with length\n" << v2 << "\n" << endl;
 
 	Vector<int> v3({ 1,2,3,4 });
 	cout << "Constructor with list\n" << v3 << "\n" << endl;
-
+	
 	Vector<int> v4 = { 1,2,3,4 };
 	cout << "Constructor with list 2\n" << v4 << "\n" << endl;
-
+	
 	Vector<int> v5(v2);
 	cout << "Constructor with vector\n" << v5 << "\n" << endl;
 
@@ -71,11 +71,8 @@ int main() {
 
 	cout << "Left hand multiplication\n" << (3 * v3) << endl;
 	cout << "Left hand multiplication with double\n" << (3.5 * v3) << "\n" << endl;
-	*/
-
 
 	// Matrix tests
-	/*
 	Matrix<int> map(2, 2);
 
 	map[{0, 0}] = 0;
@@ -130,30 +127,35 @@ int main() {
 	cout << "# of iterations " << cg(m2, b3, x3, 1e-2, 1000) << endl;
 	cout << "Solution " << x3 << endl;
 	cout << "Result " << m2.matvec(x3) << "\n" << endl;
-	*/
 
-	// Heat1D tests
-	//cout << "Matrix of Heat1D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
-	//cout << Heat1D(0.3125, 0.1, 3).M << "\n" << endl;
+	//Heat1D tests
+	cout << "Matrix of Heat1D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
+	cout << Heat1D(0.3125, 0.1, 3).M << "\n" << endl;
 
-	// Not recommended to run. (Takes a while)
+	// Heat1D solutions
 	Heat1D h1(0.3125, 0.001, 99);
 	cout << "Exact solution:\n" << h1.exact(1) << endl;
 	cout << "Numerical solution:\n" << h1.solve(1) << endl;
 
-	//cout << "Matrix of Heat2D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
-	//cout << Heat2D(0.3125, 0.1, 3).M << "\n" << endl;
+	// Heat2D tests
+	cout << "Matrix of Heat2D with m = 3, alpha = 0.3125 and dt = 0.1" << endl;
+	cout << Heat2D(0.3125, 0.1, 3).M << "\n" << endl;
 
-	//Heat2D h2(0.3125, 0.001, 99);
+	// Heat2D solutions
+	Heat2D h2(0.3125, 0.001, 99);
 	//cout << "Exact solution:\n" << h2.exact(0.5) << endl;
-	//cout << "Numerical solution:\n" << h2.solve(0.5) << endl;
-	/*
+	cout << "Numerical solution:\n" << h2.solve(0.5) << endl;
+	
+	// Heat generic amount of dimensions test (1, 2 and 3)
 	Heat<1> heat1(0.3125, 0.1, 3);
 	cout << heat1.M << endl;
 
 	Heat<2> heat2(0.3125, 0.1, 3);
 	cout << heat2.M << endl;
-	*/
+
+	Heat<3> heat3(0.3125, 0.1, 3);
+	cout << heat3.M << endl;
+	
 	system("pause");
 	return 0;
 }
